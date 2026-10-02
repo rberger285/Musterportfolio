@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Musterportfolio Dashboard</title>
+<meta name="description" content="Fiktives Musterportfolio 60/40 im Vergleich zur Benchmark. Tägliche Schlusskurse.">
+<style>
+:root{
+  --bg:#f6f6f4; --card:#ffffff; --ink:#0b0b0b; --ink2:#52514e; --muted:#8a8985; --line:#e4e3df;
+  --pf:#2a78d6; --bm:#eb6834; --pos:#0a7a3d; --neg:#c0392b; --accent:#1f3864; --chip:#eef2f8;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121211; --card:#1a1a19; --ink:#ffffff; --ink2:#c3c2b7; --muted:#8f8e86; --line:#2e2e2b;
+    --pf:#3987e5; --bm:#d95926; --pos:#3fbf7f; --neg:#ef6b5d; --accent:#9db4e0; --chip:#23272f;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.wrap{max-width:1120px;margin:0 auto;padding:24px 16px 48px}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:8px;margin-bottom:18px}
+h1{font-size:24px;margin:0;color:var(--accent)}
+.sub{color:var(--ink2);font-size:13px}
+.grid{display:grid;gap:14px}
+.kpis{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:820px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+.kpi .label{font-size:12px;color:var(--ink2);text-transform:uppercase;letter-spacing:.03em}
+.kpi .val{font-size:26px;font-weight:700;margin-top:4px;font-variant-numeric:tabular-nums}
+.kpi .hint{font-size:12px;color:var(--muted);margin-top:2px}
+.pos{color:var(--pos)} .neg{color:var(--neg)}
+h2{font-size:16px;margin:0 0 10px;color:var(--accent)}
+section{margin-top:14px}
+.controls{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:transparent;color:var(--ink2);padding:6px 11px;font:inherit;font-size:13px;cursor:pointer}
+.seg button.on{background:var(--chip);color:var(--ink);font-weight:600}
+.chartbox{position:relative;height:340px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:7px 8px;border-bottom:1px solid var(--line)}
+th{font-size:12px;color:var(--ink2);font-weight:600;text-align:right}
+th:first-child,td:first-child{text-align:left}
+td{text-align:right;font-variant-numeric:tabular-nums}
+td.l{text-align:left}
+tr.tot td{font-weight:700;border-top:2px solid var(--line)}
+.isin{display:block;font-size:11px;color:var(--muted)}
+.two{grid-template-columns:1fr 1fr}
+@media (max-width:820px){.two{grid-template-columns:1fr}}
+.bar{display:flex;height:26px;border-radius:6px;overflow:hidden;margin:6px 0 4px}
+.bar div{display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:600;white-space:nowrap}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--ink2);flex-wrap:wrap}
+.dot{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+ul.log{margin:0;padding-left:18px} ul.log li{margin:4px 0}
+.disc{font-size:12px;color:var(--ink2)}
+.scroll{overflow-x:auto}
+footer{margin-top:18px;font-size:12px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Musterportfolio 60/40</h1>
+      <div class="sub">Fiktives Musterportfolio · Auflage 01.01.2026 · Index 100 = Auflage · Alle Angaben in Prozent</div>
+    </div>
+    <div class="sub" id="asof">Lade Daten …</div>
+  </header>
+
+  <div class="grid kpis">
+    <div class="card kpi"><div class="label">Seit Auflage (nach fikt. Kosten)</div><div class="val" id="k1">–</div><div class="hint" id="k1h"></div></div>
+    <div class="card kpi"><div class="label">Benchmark seit Auflage</div><div class="val" id="k2">–</div><div class="hint" id="k2h"></div></div>
+    <div class="card kpi"><div class="label">Laufendes Quartal</div><div class="val" id="k3">–</div><div class="hint" id="k3h"></div></div>
+    <div class="card kpi"><div class="label">Aktien / Anleihen</div><div class="val" id="k4">–</div><div class="hint">Strategie 60 / 40</div></div>
+  </div>
+
+  <section class="card">
+    <h2>Wertentwicklung im Vergleich zur Benchmark</h2>
+    <div class="controls">
+      <div class="seg" id="freq"><button data-v="d" class="on">Täglich</button><button data-v="w">Wöchentlich</button><button data-v="m">Monatlich</button></div>
+      <div class="seg" id="range"><button data-v="all" class="on">Seit Auflage</button><button data-v="q">Quartal</button><button data-v="3m">3 Monate</button><button data-v="1m">1 Monat</button></div>
+      <div class="seg" id="cost"><button data-v="net" class="on">Nach fikt. Kosten</button><button data-v="gross">Vor Kosten</button></div>
+    </div>
+    <div class="chartbox"><canvas id="chart" aria-label="Wertentwicklung Musterportfolio und Benchmark"></canvas></div>
+    <div class="sub" id="chartnote" style="margin-top:6px"></div>
+  </section>
+
+  <section class="card">
+    <h2>Wertentwicklung nach Quartalen</h2>
+    <div class="scroll"><table id="qtab"></table></div>
+    <div class="sub" style="margin-top:6px">Musterportfolio nach fiktiven Verwaltungskosten. Differenz in Prozentpunkten.</div>
+  </section>
+
+  <section class="card">
+    <h2>Aufteilung</h2>
+    <div class="bar" id="allocbar"></div>
+    <div class="legend" id="alloclegend"></div>
+  </section>
+
+  <div class="grid two">
+    <section class="card"><h2>Aktien-Portfolio</h2><div class="scroll"><table id="eqtab"></table></div></section>
+    <section class="card"><h2>Anleihen-Portfolio</h2><div class="scroll"><table id="fitab"></table></div></section>
+  </div>
+  <div class="sub" style="margin-top:6px">Anteil = am Gesamtportfolio bzw. innerhalb des Segments. Seit Auflage = Kursveränderung seit 31.12.2025 bzw. seit Aufnahme (*), ohne Ausschüttungen.</div>
+
+  <div class="grid two">
+    <section class="card"><h2>Veränderungen im Musterportfolio</h2><ul class="log" id="log"></ul></section>
+    <section class="card"><h2>Kosten des Musterportfolios</h2><table id="costtab"></table>
+      <div class="sub" style="margin-top:6px">Vergleichswerte sind typische Marktspannen (Annahme), keine konkreten Angebote.</div></section>
+  </div>
+
+  <section class="card disc">
+    <h2>Wichtige Hinweise</h2>
+    <p>Diese Seite dient ausschließlich der Information. Sie stellt keine Anlageberatung, keine Anlageempfehlung und kein Angebot zum Kauf oder Verkauf von Finanzinstrumenten dar und ist für alle Leser identisch. Das Musterportfolio ist fiktiv und wird auf Basis eines fiktiven Startwerts berechnet. Die fiktiven Verwaltungskosten sind eine Modellannahme. Die vergangene Wertentwicklung ist kein verlässlicher Indikator für die künftige Wertentwicklung. Weder der Verfasser noch die <span id="pub"></span> halten die im Musterportfolio enthaltenen Instrumente.</p>
+    <p>Kursdaten: Xetra-Schlusskurse (Yahoo Finance), täglich nach Börsenschluss aktualisiert, ohne Gewähr. Benchmark: <span id="bmdesc"></span>.</p>
+  </section>
+
+  <footer><span id="upd"></span><a href="impressum.html">Impressum</a></footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

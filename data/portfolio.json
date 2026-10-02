@@ -1,0 +1,234 @@
+{
+ "title": "Musterportfolio",
+ "publisher": "RDB Capital Investment GmbH",
+ "inception": "2025-12-31",
+ "fictitiousStart": 100000,
+ "fictitiousCostsPA": 0.0075,
+ "strategy": {
+  "Aktien": 0.6,
+  "Anleihen": 0.4
+ },
+ "instruments": [
+  {
+   "id": "XEEU",
+   "name": "Xtrackers US Equity Enhanced Active UCITS ETF 1C",
+   "isin": "IE0002PGSLZ5",
+   "yahoo": "XEEU.DE",
+   "sleeve": "Aktien",
+   "region": "USA",
+   "ter": 0.002,
+   "dist": false
+  },
+  {
+   "id": "IBCG",
+   "name": "iShares MSCI Japan EUR Hedged UCITS ETF (Acc)",
+   "isin": "IE00B42Z5J44",
+   "yahoo": "IBCG.DE",
+   "sleeve": "Aktien",
+   "region": "Japan",
+   "ter": 0.0064,
+   "dist": false
+  },
+  {
+   "id": "XEEE",
+   "name": "Xtrackers Europe Equity Enhanced Active UCITS ETF 1C",
+   "isin": "IE00002ZKAP0",
+   "yahoo": "XEEE.DE",
+   "sleeve": "Aktien",
+   "region": "Europa",
+   "ter": 0.0025,
+   "dist": false
+  },
+  {
+   "id": "VFEA",
+   "name": "Vanguard FTSE Emerging Markets UCITS ETF (USD) Acc",
+   "isin": "IE00BK5BR733",
+   "yahoo": "VFEA.DE",
+   "sleeve": "Aktien",
+   "region": "Schwellenländer",
+   "ter": 0.0017,
+   "dist": false
+  },
+  {
+   "id": "FLXC",
+   "name": "Franklin FTSE China UCITS ETF",
+   "isin": "IE00BHZRR147",
+   "yahoo": "FLXC.DE",
+   "sleeve": "Aktien",
+   "region": "China",
+   "ter": 0.0019,
+   "dist": false
+  },
+  {
+   "id": "SXRQ",
+   "name": "iShares € Govt Bond 7-10yr UCITS ETF (Acc)",
+   "isin": "IE00B3VTN290",
+   "yahoo": "SXRQ.DE",
+   "sleeve": "Anleihen",
+   "region": "Euro-Staatsanleihen 7–10 J.",
+   "ter": 0.0015,
+   "dist": false
+  },
+  {
+   "id": "EUNW",
+   "name": "iShares € High Yield Corp Bond UCITS ETF EUR (Dist)",
+   "isin": "IE00B66F4759",
+   "yahoo": "EUNW.DE",
+   "sleeve": "Anleihen",
+   "region": "Euro-Hochzinsanleihen",
+   "ter": 0.005,
+   "dist": true
+  },
+  {
+   "id": "IS3C",
+   "name": "iShares J.P. Morgan $ EM Bond EUR Hedged UCITS ETF (Dist)",
+   "isin": "IE00B9M6RS56",
+   "yahoo": "IS3C.DE",
+   "sleeve": "Anleihen",
+   "region": "Schwellenländer-Anleihen (EUR-abg.)",
+   "ter": 0.005,
+   "dist": true
+  },
+  {
+   "id": "XM31",
+   "name": "Xtrackers II Target Maturity Sept 2031 EUR Corporate Bond UCITS ETF 1C",
+   "isin": "LU2673523135",
+   "yahoo": "XM31.DE",
+   "sleeve": "Anleihen",
+   "region": "Euro-Unternehmensanleihen 2031",
+   "ter": 0.0012,
+   "dist": false
+  }
+ ],
+ "startPrices": {
+  "XEEU": 30.08,
+  "IBCG": 118.32,
+  "XEEE": 32.71,
+  "VFEA": 67.36,
+  "FLXC": 27.63,
+  "SXRQ": 152.96,
+  "EUNW": 93.35,
+  "IS3C": 69.46,
+  "XM31": 9.903,
+  "IBCH": 107.2,
+  "CBU2": 5.4446
+ },
+ "benchmark": {
+  "label": "Benchmark 60/40",
+  "description": "60 % MSCI World (EUR-abgesichert) / 40 % Euro-Anleihen (Aggregate), Gesamtertrag",
+  "equity": {
+   "yahoo": "IBCH.DE",
+   "id": "IBCH",
+   "units": 562.271577171774
+  },
+  "bonds": {
+   "yahoo": "CBU2.DE",
+   "id": "CBU2",
+   "units": 8130.081300813008,
+   "basePrice": 4.93
+  }
+ },
+ "transactions": [
+  {
+   "date": "2025-12-31",
+   "type": "Opening",
+   "id": "XEEU",
+   "shares": 1193.072329,
+   "price": 30.42321
+  },
+  {
+   "date": "2025-12-31",
+   "type": "Opening",
+   "id": "IBCG",
+   "shares": 38.998701,
+   "price": 117.140311
+  },
+  {
+   "date": "2025-12-31",
+   "type": "Opening",
+   "id": "XEEE",
+   "shares": 597.446685,
+   "price": 32.242291
+  },
+  {
+   "date": "2025-12-31",
+   "type": "Opening",
+   "id": "FLXC",
+   "shares": 245.243468,
+   "price": 28.552891
+  },
+  {
+   "date": "2025-12-31",
+   "type": "Opening",
+   "id": "SXRQ",
+   "shares": 107.996935,
+   "price": 152.793132
+  },
+  {
+   "date": "2025-12-31",
+   "type": "Opening",
+   "id": "EUNW",
+   "shares": 105.999101,
+   "price": 93.059091
+  },
+  {
+   "date": "2025-12-31",
+   "type": "Opening",
+   "id": "IS3C",
+   "shares": 95.007577,
+   "price": 69.539085
+  },
+  {
+   "date": "2026-03-03",
+   "type": "Sell",
+   "id": "XEEU",
+   "shares": 230,
+   "price": 30.4501
+  },
+  {
+   "date": "2026-03-03",
+   "type": "Buy",
+   "id": "XM31",
+   "shares": 698,
+   "price": 10.03
+  },
+  {
+   "date": "2026-07-13",
+   "type": "Sell",
+   "id": "XEEE",
+   "shares": 223,
+   "price": 35.98
+  },
+  {
+   "date": "2026-07-13",
+   "type": "Buy",
+   "id": "VFEA",
+   "shares": 105,
+   "price": 76.16
+  }
+ ],
+ "changes": [
+  {
+   "date": "2026-07-13",
+   "text": "Im Musterportfolio wurde die Position Europa-Aktien reduziert (rund 7,5 % des Portfolios) und eine Position Schwellenländer-Aktien aufgebaut."
+  },
+  {
+   "date": "2026-03-03",
+   "text": "Im Musterportfolio wurde die Position USA-Aktien reduziert (rund 7 % des Portfolios) und eine Position Euro-Unternehmensanleihen (Laufzeit 2031) aufgebaut."
+  }
+ ],
+ "comparison": [
+  {
+   "label": "Aktiv gemanagter Mischfonds (laufende Kosten, zzgl. ggf. Ausgabeaufschlag)",
+   "pa": 0.016
+  },
+  {
+   "label": "Vermögensverwaltung einer Bank",
+   "pa": 0.0175
+  },
+  {
+   "label": "Robo-Advisor",
+   "pa": 0.008
+  }
+ ]
+}
