@@ -60,9 +60,9 @@
     let k = 0; dates.forEach((d, i) => { if (d < q0) k = i; }); return k; })();
   const qG = nav[N] / nav[qStartIdx] - 1, qN = (1 + qG) * netF(dates[qStartIdx], last) - 1, qB = bmv[N] / bmv[qStartIdx] - 1;
   set("asof", "Stand: <b>" + fmtD(last) + "</b> (Schlusskurse)");
-  set("k1", pct(pfN), cls(pfN)); set("k1h", "vor Kosten " + pct(pfG));
-  set("k2", pct(bmR), cls(bmR)); set("k2h", "Differenz " + pp(pfN - bmR));
-  set("k3", pct(qN), cls(qN)); set("k3h", "Benchmark " + pct(qB) + " · seit " + fmtD(dates[qStartIdx]));
+  set("k1", pct(pfG), cls(pfG)); set("k1h", "nach fikt. Verwaltungskosten " + pct(pfN));
+  set("k2", pct(bmR), cls(bmR)); set("k2h", "Differenz " + pp(pfG - bmR) + " · nach Kosten " + pp(pfN - bmR));
+  set("k3", pct(qG), cls(qG)); set("k3h", "nach Kosten " + pct(qN) + " · Benchmark " + pct(qB));
   const eq = insts.filter((i) => i.sleeve === "Aktien").reduce((s, i) => s + mv[N][i.id], 0);
   const fi = insts.filter((i) => i.sleeve === "Anleihen").reduce((s, i) => s + mv[N][i.id], 0);
   set("k4", Math.round(eq / nav[N] * 100) + " / " + Math.round(fi / nav[N] * 100));
@@ -78,7 +78,7 @@
     });
     return keep;
   };
-  const state = { freq: "d", range: "all", cost: "net" };
+  const state = { freq: "d", range: "all", cost: "gross" };
   let chart;
   function draw() {
     let from = 0;
@@ -126,14 +126,14 @@
   // ---- quarter table (long-term view)
   const qEnds = [];
   dates.forEach((d, k) => { if (k > 0 && (k === N || Math.floor((+d.slice(5, 7) - 1) / 3) !== Math.floor((+dates[k + 1].slice(5, 7) - 1) / 3) || d.slice(0, 4) !== dates[k + 1].slice(0, 4))) qEnds.push(k); });
-  let prev = 0, rows = "<tr><th>Zeitraum</th><th>Musterportfolio</th><th>Benchmark</th><th>Differenz</th></tr>";
+  let prev = 0, rows = "<tr><th>Zeitraum</th><th>Musterportfolio</th><th>nach fikt. Kosten</th><th>Benchmark</th><th>Differenz</th></tr>";
   qEnds.forEach((k) => {
     const m = +dates[k].slice(5, 7), q = Math.floor((m - 1) / 3) + 1;
-    const r = (nav[k] / nav[prev]) * netF(dates[prev], dates[k]) - 1, rb = bmv[k] / bmv[prev] - 1;
-    rows += `<tr><td>Q${q} ${dates[k].slice(0, 4)}${k === N && Date.now() < Date.UTC(+dates[k].slice(0, 4), q * 3, 1) ? " (laufend)" : ""}</td><td class="${cls(r)}">${pct(r)}</td><td>${pct(rb)}</td><td>${pp(r - rb)}</td></tr>`;
+    const g = nav[k] / nav[prev] - 1, r = (1 + g) * netF(dates[prev], dates[k]) - 1, rb = bmv[k] / bmv[prev] - 1;
+    rows += `<tr><td>Q${q} ${dates[k].slice(0, 4)}${k === N && Date.now() < Date.UTC(+dates[k].slice(0, 4), q * 3, 1) ? " (laufend)" : ""}</td><td class="${cls(g)}"><b>${pct(g)}</b></td><td class="sec">${pct(r)}</td><td>${pct(rb)}</td><td>${pp(g - rb)}</td></tr>`;
     prev = k;
   });
-  rows += `<tr class="tot"><td>Seit Auflage</td><td class="${cls(pfN)}">${pct(pfN)}</td><td>${pct(bmR)}</td><td>${pp(pfN - bmR)}</td></tr>`;
+  rows += `<tr class="tot"><td>Seit Auflage</td><td class="${cls(pfG)}">${pct(pfG)}</td><td class="sec">${pct(pfN)}</td><td>${pct(bmR)}</td><td>${pp(pfG - bmR)}</td></tr>`;
   set("qtab", rows);
 
   // ---- allocation bar

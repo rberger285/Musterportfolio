@@ -43,6 +43,7 @@ th{font-size:12px;color:var(--ink2);font-weight:600;text-align:right}
 th:first-child,td:first-child{text-align:left}
 td{text-align:right;font-variant-numeric:tabular-nums}
 td.l{text-align:left}
+td.sec{color:var(--ink2);font-size:13px}
 tr.tot td{font-weight:700;border-top:2px solid var(--line)}
 .isin{display:block;font-size:11px;color:var(--muted)}
 .two{grid-template-columns:1fr 1fr}
@@ -69,7 +70,7 @@ a{color:var(--accent)}
   </header>
 
   <div class="grid kpis">
-    <div class="card kpi"><div class="label">Seit Auflage (nach fikt. Kosten)</div><div class="val" id="k1">–</div><div class="hint" id="k1h"></div></div>
+    <div class="card kpi"><div class="label">Musterportfolio seit Auflage</div><div class="val" id="k1">–</div><div class="hint" id="k1h"></div></div>
     <div class="card kpi"><div class="label">Benchmark seit Auflage</div><div class="val" id="k2">–</div><div class="hint" id="k2h"></div></div>
     <div class="card kpi"><div class="label">Laufendes Quartal</div><div class="val" id="k3">–</div><div class="hint" id="k3h"></div></div>
     <div class="card kpi"><div class="label">Aktien / Anleihen</div><div class="val" id="k4">–</div><div class="hint">Strategie 60 / 40</div></div>
@@ -80,7 +81,7 @@ a{color:var(--accent)}
     <div class="controls">
       <div class="seg" id="freq"><button data-v="d" class="on">Täglich</button><button data-v="w">Wöchentlich</button><button data-v="m">Monatlich</button></div>
       <div class="seg" id="range"><button data-v="all" class="on">Seit Auflage</button><button data-v="q">Quartal</button><button data-v="3m">3 Monate</button><button data-v="1m">1 Monat</button></div>
-      <div class="seg" id="cost"><button data-v="net" class="on">Nach fikt. Kosten</button><button data-v="gross">Vor Kosten</button></div>
+      <div class="seg" id="cost"><button data-v="gross" class="on">Vor Kosten</button><button data-v="net">Nach fikt. Kosten</button></div>
     </div>
     <div class="chartbox"><canvas id="chart" aria-label="Wertentwicklung Musterportfolio und Benchmark"></canvas></div>
     <div class="sub" id="chartnote" style="margin-top:6px"></div>
@@ -89,7 +90,7 @@ a{color:var(--accent)}
   <section class="card">
     <h2>Wertentwicklung nach Quartalen</h2>
     <div class="scroll"><table id="qtab"></table></div>
-    <div class="sub" style="margin-top:6px">Musterportfolio nach fiktiven Verwaltungskosten. Differenz in Prozentpunkten.</div>
+    <div class="sub" style="margin-top:6px">Musterportfolio vor Kosten (nach ETF-Kosten); daneben nach fiktiven Verwaltungskosten von 0,75 % p. a. Differenz = Musterportfolio vor Kosten minus Benchmark, in Prozentpunkten.</div>
   </section>
 
   <section class="card">

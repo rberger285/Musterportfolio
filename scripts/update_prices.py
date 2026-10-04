@@ -29,13 +29,17 @@ def fetch(symbol):
                 raise
             time.sleep(5)
     tz = res["meta"].get("gmtoffset", 0)
-    closes = {}
-    for t, c in zip(res.get("timestamp") or [], res["indicators"]["quote"][0]["close"]):
+    closes, opens = {}, {}
+    q = res["indicators"]["quote"][0]
+    for t, c, o in zip(res.get("timestamp") or [], q["close"], q.get("open") or q["close"]):
+        d = dt.datetime.utcfromtimestamp(t + tz).date().isoformat()
         if c is not None:
-            closes[dt.datetime.utcfromtimestamp(t + tz).date().isoformat()] = round(c, 4)
+            closes[d] = round(c, 4)
+        if o is not None:
+            opens[d] = round(o, 4)
     divs = sorted((dt.datetime.utcfromtimestamp(v["date"] + tz).date().isoformat(), v["amount"])
                   for v in (res.get("events", {}).get("dividends", {}) or {}).values())
-    return closes, divs
+    return closes, opens, divs
 
 
 def main():
@@ -43,15 +47,26 @@ def main():
     for leg in ("equity", "bonds"):
         b = CFG["benchmark"][leg]
         symbols[b["id"]] = (b["yahoo"], False)
-    prices, dists = {}, {}
+    prices, dists, opens = {}, {}, {}
     for iid, (sym, is_dist) in symbols.items():
-        closes, divs = fetch(sym)
+        closes, opn, divs = fetch(sym)
         prices[iid] = closes
+        opens[iid] = opn
         if is_dist:
             dists[iid] = [[d, a] for d, a in divs]
         print(f"{iid:5} {sym:9} {len(closes):4} closes, last {max(closes) if closes else '-'}")
     (DATA / "prices.json").write_text(json.dumps(prices, separators=(",", ":")), encoding="utf-8")
     (DATA / "distributions.json").write_text(json.dumps(dists, indent=1), encoding="utf-8")
+    # Trades booked with an estimated price get the Xetra opening price of the trade date once it exists.
+    filled = 0
+    for t in CFG["transactions"]:
+        if t.get("estimated") and t["date"] in opens.get(t["id"], {}):
+            t["price"] = opens[t["id"]][t["date"]]
+            t["estimated"] = False
+            filled += 1
+    if filled:
+        (DATA / "portfolio.json").write_text(json.dumps(CFG, ensure_ascii=False, indent=1), encoding="utf-8")
+        print(f"filled {filled} execution price(s) with the opening price")
     (DATA / "updated.json").write_text(json.dumps({"updated": dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%MZ")}), encoding="utf-8")
 
 
