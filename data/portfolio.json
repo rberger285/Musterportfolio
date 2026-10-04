@@ -205,9 +205,53 @@
    "id": "VFEA",
    "shares": 105,
    "price": 76.16
+  },
+  {
+   "date": "2026-10-05",
+   "type": "Sell",
+   "id": "XEEE",
+   "shares": 140,
+   "price": 35.5,
+   "estimated": true
+  },
+  {
+   "date": "2026-10-05",
+   "type": "Sell",
+   "id": "EUNW",
+   "shares": 45,
+   "price": 88.076,
+   "estimated": true
+  },
+  {
+   "date": "2026-10-05",
+   "type": "Sell",
+   "id": "IS3C",
+   "shares": 46,
+   "price": 64.0,
+   "estimated": true
+  },
+  {
+   "date": "2026-10-05",
+   "type": "Buy",
+   "id": "XEEU",
+   "shares": 139,
+   "price": 36.2,
+   "estimated": true
+  },
+  {
+   "date": "2026-10-05",
+   "type": "Buy",
+   "id": "SXRQ",
+   "shares": 47,
+   "price": 147.04,
+   "estimated": true
   }
  ],
  "changes": [
+  {
+   "date": "2026-10-05",
+   "text": "Anpassung zur Börseneröffnung: Im Musterportfolio wurden Europa-Aktien (−4,7 %-Pkt.) zugunsten von USA-Aktien (+4,7 %-Pkt.) reduziert. Im Anleihenteil wurden Hochzinsanleihen (−3,7 %-Pkt.) und Schwellenländer-Anleihen (−2,8 %-Pkt.) zugunsten von Euro-Staatsanleihen 7–10 Jahre (+6,5 %-Pkt.) reduziert. Aktienquote unverändert bei rund 63 %."
+  },
   {
    "date": "2026-07-13",
    "text": "Im Musterportfolio wurde die Position Europa-Aktien reduziert (rund 7,5 % des Portfolios) und eine Position Schwellenländer-Aktien aufgebaut."
