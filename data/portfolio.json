@@ -211,40 +211,40 @@
    "type": "Sell",
    "id": "XEEE",
    "shares": 140,
-   "price": 35.5,
-   "estimated": true
+   "price": 35.64,
+   "estimated": false
   },
   {
    "date": "2026-10-05",
    "type": "Sell",
    "id": "EUNW",
    "shares": 45,
-   "price": 88.076,
-   "estimated": true
+   "price": 88.314,
+   "estimated": false
   },
   {
    "date": "2026-10-05",
    "type": "Sell",
    "id": "IS3C",
    "shares": 46,
-   "price": 64.0,
-   "estimated": true
+   "price": 63.778,
+   "estimated": false
   },
   {
    "date": "2026-10-05",
    "type": "Buy",
    "id": "XEEU",
    "shares": 139,
-   "price": 36.2,
-   "estimated": true
+   "price": 36.27,
+   "estimated": false
   },
   {
    "date": "2026-10-05",
    "type": "Buy",
    "id": "SXRQ",
    "shares": 47,
-   "price": 147.04,
-   "estimated": true
+   "price": 147.06,
+   "estimated": false
   }
  ],
  "changes": [
