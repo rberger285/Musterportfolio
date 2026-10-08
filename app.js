@@ -35,7 +35,7 @@
   }, 0);
   const tradeCash = (d) => tx.reduce((c, t) => c + (t.date > d ? 0 : t.type === "Buy" ? -t.shares * t.price : t.type === "Sell" ? t.shares * t.price : 0), 0);
   const distEvents = [];
-  Object.entries(dists).forEach(([id, list]) => list.forEach(([ex, a]) => ex > inc && distEvents.push({ ex, cash: sharesAt(id, ex, true) * a })));
+  Object.entries(dists).forEach(([id, list]) => list.forEach(([ex, a]) => ex > inc && distEvents.push({ id, ex, cash: sharesAt(id, ex, true) * a })));
   const distCash = (d) => distEvents.reduce((c, e) => c + (e.ex <= d ? e.cash : 0), 0);
 
   const insts = cfg.instruments;
@@ -143,19 +143,39 @@
   set("alloclegend", parts.map(([n, v, c]) => `<span><span class="dot" style="background:${c}"></span>${n} ${w1(v / nav[N])}</span>`).join("") +
     `<span>Strategie: ${Object.entries(cfg.strategy).map(([k, v]) => k + " " + Math.round(v * 100) + " %").join(" / ")}</span>`);
 
-  // ---- holdings tables
+  // ---- holdings tables, incl. time-weighted return per asset class (trades = flows, distributions = income)
+  function sleeveIndex(sleeve) {
+    const ids_ = insts.filter((i) => i.sleeve === sleeve).map((i) => i.id);
+    const idx = [1];
+    for (let k = 1; k <= N; k++) {
+      const v0 = ids_.reduce((s, id) => s + mv[k - 1][id], 0), v1 = ids_.reduce((s, id) => s + mv[k][id], 0);
+      const inP = (d) => d > dates[k - 1] && d <= dates[k];
+      const flow = tx.reduce((s, t) => s + (ids_.includes(t.id) && inP(t.date) ? (t.type === "Buy" ? 1 : t.type === "Sell" ? -1 : 0) * t.shares * t.price : 0), 0);
+      const inc_ = distEvents.reduce((s, e) => s + (ids_.includes(e.id) && inP(e.ex) ? e.cash : 0), 0);
+      idx.push(idx[k - 1] * (v0 > 0 ? (v1 - flow + inc_) / v0 : 1));
+    }
+    return idx;
+  }
+  const bmLeg = { Aktien: { label: "MSCI World (EUR-abgesichert)", s: px[bm.equity.id] }, Anleihen: { label: "Euro-Anleihen (Aggregate)", s: px[bm.bonds.id] } };
   function holdings(sleeve, el) {
     const list = insts.filter((i) => i.sleeve === sleeve).sort((a, b) => mv[N][b.id] - mv[N][a.id]);
     const tot = list.reduce((s, i) => s + mv[N][i.id], 0);
-    let h = "<tr><th>Anlage</th><th>Anteil gesamt</th><th>im Segment</th><th>Seit Auflage</th><th>Vortag</th></tr>";
+    const q0 = qStartIdx;
+    let h = "<tr><th>Anlage</th><th>Anteil gesamt</th><th>im Segment</th><th>Quartal</th><th>Seit Auflage</th><th>Vortag</th></tr>";
     list.forEach((i) => {
       if (mv[N][i.id] <= 0) return;
       const firstBuy = tx.find((t) => t.id === i.id && (t.type === "Buy" || t.type === "Opening"));
-      const base = firstBuy && firstBuy.date > inc ? firstBuy.price : cfg.startPrices[i.id];
-      const since = px[i.id][N] / base - 1, day = px[i.id][N] / px[i.id][N - 1] - 1;
-      h += `<tr><td class="l">${i.region}${firstBuy && firstBuy.date > inc ? "*" : ""}<span class="isin">${i.name} · ${i.isin}</span></td><td>${w1(mv[N][i.id] / nav[N])}</td><td>${w1(mv[N][i.id] / tot)}</td><td class="${cls(since)}">${pct(since, 1)}</td><td class="${cls(day)}">${pct(day, 1)}</td></tr>`;
+      const late = firstBuy && firstBuy.date > inc;
+      const base = late ? firstBuy.price : cfg.startPrices[i.id];
+      const qBase = late && firstBuy.date > dates[q0] ? firstBuy.price : px[i.id][q0];
+      const since = px[i.id][N] / base - 1, qr = px[i.id][N] / qBase - 1, day = px[i.id][N] / px[i.id][N - 1] - 1;
+      h += `<tr><td class="l">${i.region}${late ? "*" : ""}<span class="isin">${i.name} · ${i.isin}</span></td><td>${w1(mv[N][i.id] / nav[N])}</td><td>${w1(mv[N][i.id] / tot)}</td><td class="${cls(qr)}">${pct(qr, 1)}</td><td class="${cls(since)}">${pct(since, 1)}</td><td class="${cls(day)}">${pct(day, 1)}</td></tr>`;
     });
-    h += `<tr class="tot"><td class="l">${sleeve} gesamt</td><td>${w1(tot / nav[N])}</td><td>100 %</td><td></td><td></td></tr>`;
+    const ix = sleeveIndex(sleeve), sS = ix[N] - 1, sQ = ix[N] / ix[q0] - 1, sD = ix[N] / ix[N - 1] - 1;
+    h += `<tr class="tot"><td class="l">${sleeve} gesamt<span class="isin">Wertentwicklung inkl. Ausschüttungen, bereinigt um Umschichtungen</span></td><td>${w1(tot / nav[N])}</td><td>100 %</td><td class="${cls(sQ)}">${pct(sQ, 1)}</td><td class="${cls(sS)}">${pct(sS, 1)}</td><td class="${cls(sD)}">${pct(sD, 1)}</td></tr>`;
+    const b = bmLeg[sleeve].s, bS = b[N] / b[0] - 1, bQ = b[N] / b[q0] - 1, bD = b[N] / b[N - 1] - 1;
+    h += `<tr><td class="l sec">Vergleich: ${bmLeg[sleeve].label}</td><td></td><td></td><td class="sec">${pct(bQ, 1)}</td><td class="sec">${pct(bS, 1)}</td><td class="sec">${pct(bD, 1)}</td></tr>`;
+    h += `<tr><td class="l sec">Differenz ${sleeve} zur Vergleichsgröße</td><td></td><td></td><td class="sec">${pp(sQ - bQ)}</td><td class="sec">${pp(sS - bS)}</td><td class="sec"></td></tr>`;
     set(el, h);
   }
   holdings("Aktien", "eqtab"); holdings("Anleihen", "fitab");

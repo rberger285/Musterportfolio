@@ -37,6 +37,11 @@ def fetch(symbol):
             closes[d] = round(c, 4)
         if o is not None:
             opens[d] = round(o, 4)
+    # The daily bar for the latest session sometimes appears late; fall back to the meta "regular market" close.
+    meta = res["meta"]
+    if meta.get("regularMarketTime") and meta.get("regularMarketPrice"):
+        d = dt.datetime.utcfromtimestamp(meta["regularMarketTime"] + tz).date().isoformat()
+        closes.setdefault(d, round(meta["regularMarketPrice"], 4))
     divs = sorted((dt.datetime.utcfromtimestamp(v["date"] + tz).date().isoformat(), v["amount"])
                   for v in (res.get("events", {}).get("dividends", {}) or {}).values())
     return closes, opens, divs
